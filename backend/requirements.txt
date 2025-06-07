@@ -1,0 +1,11 @@
+fastapi[standard]
+uvicorn
+sqlalchemy
+psycopg2-binary
+fastapi
+uvicorn[standard]
+
+
+# python3 -m venv path/to/venv   
+#source path/to/venv/bin/activate
+#python3 -m pip install sqlalchemy

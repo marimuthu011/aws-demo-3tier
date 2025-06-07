@@ -1,0 +1,48 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: ./frontend
+    container_name: react-frontend
+    ports:
+      - "8080:80"
+    networks:
+      - frontend_backend_net
+
+  fastapi:
+    build:
+      context: ./backend
+    container_name: fastapi-app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://admin:admin123@db:5432/mydb
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - frontend_backend_net
+      - backend_db_net
+
+  db:
+    image: postgres:14
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend_db_net
+
+volumes:
+  postgres_data:
+
+networks:
+  frontend_backend_net:
+  backend_db_net:
